@@ -2,12 +2,8 @@ var through = require('through');
 var http = require('http');
 var glog = require('glog')(__dirname + '/repo');
 var ecstatic = require('ecstatic')(__dirname + '/static');
-var concat = require('concat-stream');
-var hyperglue = require('hyperglue');
 var fs = require('fs');
 var trumpet = require('trumpet');
-var resumer = require('resumer');
-var strftime = require('strftime');
 var hyperspace = require('hyperspace');
 
 
@@ -26,30 +22,18 @@ var server = http.createServer(function(req, res) {
     var page_tr = trumpet();
     page_html.pipe(page_tr).pipe(res);
 
-    // Article stream containing the HTML of all articles to show.
-    var articles_html = glog.list().pipe(through(function(article) {
-      // Trumpet stream of article template HTML.
-      var article_html = fs.createReadStream('./render/article.html');
-      var tr = trumpet();
-      article_html.pipe(tr);
-
-      // Pipe article metadata and body into article element trumpet streams.
-      glog.read(article.file)
-          .pipe(tr.select('.article_body').createWriteStream());
-      resumer().queue(article.title).end()
-          .pipe(tr.select('.article_title').createWriteStream());
-      // var date = strftime("%A %B %e  %k:%M", new Date(article.date));
-      resumer().queue(article.date).end()
-          .pipe(tr.select('.article_date').createWriteStream());
-
-      // Collect final HTML in a concat stream and let it flow into through stream.
-      var that_stream = this;
-      that_stream.pause();
-      tr.pipe(concat(function(html) {
-        that_stream.queue(html);
-        that_stream.resume();
-      }));
-    }));
+    // Create stream of full articles' HTML.
+    var article_html = fs.readFileSync('./render/article.html');
+    var hstream = hyperspace(article_html, function(post) {
+      return {
+        '.article_body': { _html: post.body },
+        '.article_title': post.title,
+        '.article_date': post.date
+      };
+    });
+    var articles_html = glog.list()
+        .pipe(glog.inline('html'))
+        .pipe(hstream);
 
     // Stream the articles' HTML into the body of the page.
     var body = page_tr.select('body').createWriteStream();
