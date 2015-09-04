@@ -13,9 +13,8 @@ body {
 }
 
 .article_title {
-  /* font-size: 1.6em; */
   margin-top: 70px;
-  margin-bottom: 13px;
+  margin-bottom: 5px;
   color: #900;
 }
 
