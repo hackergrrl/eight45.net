@@ -1,0 +1,29 @@
+body {
+  line-height: 1.6;
+  font-family: 'Open Sans', Calibri, Trebuchet MS, Verdana, Arial, Sans-Serif;
+
+  width: 60%;
+  margin: 0 auto;
+}
+
+.blog_title {
+  font-size: 4.6em;
+  margin-bottom: 50px;
+  font-weight: bold;
+}
+
+.article_title {
+  /* font-size: 1.6em; */
+  margin-top: 70px;
+  margin-bottom: 13px;
+  color: #900;
+}
+
+.article_date {
+  color: #888888;
+  font-size: 16px;
+  margin-bottom: 23px;
+}
+
+.article_body {
+}
