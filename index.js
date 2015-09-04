@@ -1,11 +1,14 @@
 var through = require('through');
 var http = require('http');
-var glog = require('glog')(__dirname + '/repo');
 var ecstatic = require('ecstatic')(__dirname + '/static');
 var fs = require('fs');
 var trumpet = require('trumpet');
 var hyperspace = require('hyperspace');
 
+var opts = {
+  title: 'eight45'
+}
+var glog = require('glog')(__dirname + '/repo', opts);
 
 var server = http.createServer(function(req, res) {
   console.log('REQUEST BEGIN');
